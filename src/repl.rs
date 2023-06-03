@@ -4,9 +4,9 @@ use codemap::CodeMap;
 use codemap_diagnostic::{ColorConfig, Diagnostic, Emitter, Level, SpanLabel, SpanStyle};
 use rust_sitter::errors::{ParseError, ParseErrorReason};
 
-use crate::grammar::ast;
+use crate::grammar::parse_tree;
 
-pub fn read_command() -> ast::ProgramExpr {
+pub fn read_command() -> parse_tree::ProgramExpr {
     let stdin = std::io::stdin();
     loop {
         print!("> ");
@@ -15,7 +15,7 @@ pub fn read_command() -> ast::ProgramExpr {
         stdin.read_line(&mut input).unwrap();
         let input = input.trim().to_string();
         if !input.is_empty() {
-            let cmd = ast::parse(&input);
+            let cmd = parse_tree::parse(&input);
             match cmd {
                 Ok(c) => return c,
                 Err(errs) => {

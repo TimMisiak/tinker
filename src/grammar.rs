@@ -1,19 +1,57 @@
 
 #[rust_sitter::grammar("command")]
-pub mod ast {
+pub mod parse_tree {
+    #[derive(Debug)]
     #[rust_sitter::language]
     pub enum ProgramExpr {
-        Expression(Box<EvalExpr>),
+        Expression(Box<AddExpr>),
     }
 
+    #[derive(Debug)]
     #[rust_sitter::language]
-    pub enum EvalExpr {
-        Number(#[rust_sitter::leaf(pattern = r"(\d+|0x[0-9a-fA-F]+)", transform = parse_int)] u64),
+    pub enum AddExpr {
         #[rust_sitter::prec_left(1)]
         Add(
-            Box<EvalExpr>,
+            Box<MultExpr>,
             #[rust_sitter::leaf(text = "+")] (),
-            Box<EvalExpr>,
+            Box<AddExpr>,
+        ),
+        #[rust_sitter::prec_left(1)]
+        Subtract(
+            Box<MultExpr>,
+            #[rust_sitter::leaf(text = "-")] (),
+            Box<AddExpr>,
+        ),
+        MultExp(Box<MultExpr>)
+    }
+
+    #[derive(Debug)]
+    #[rust_sitter::language]
+    pub enum MultExpr {
+        #[rust_sitter::prec_left(1)]
+        Multiply(
+            Box<BasicExpr>,
+            #[rust_sitter::leaf(text = "*")] (),
+            Box<MultExpr>,
+        ),
+        #[rust_sitter::prec_left(1)]
+        Divide(
+            Box<BasicExpr>,
+            #[rust_sitter::leaf(text = "/")] (),
+            Box<MultExpr>,
+        ),
+        BasicExp(Box<BasicExpr>)
+    }
+
+    #[derive(Debug)]
+    #[rust_sitter::language]
+    pub enum BasicExpr {
+        Number(#[rust_sitter::leaf(pattern = r"(\d+|0x[0-9a-fA-F]+)", transform = parse_int)] u64),
+        #[rust_sitter::prec_left(1)]
+        Parens(
+            #[rust_sitter::leaf(text = "(")] (),
+            Box<AddExpr>,
+            #[rust_sitter::leaf(text = ")")] (),
         ),
     }
 

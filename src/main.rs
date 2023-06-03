@@ -1,12 +1,16 @@
 mod eval;
 mod grammar;
 mod repl;
+mod ast;
 
 fn main() {
     println!("Welcome to Tinker!");
     loop {
-        let command = repl::read_command();
-        let result = eval::evaluate_program(command);
-        println!("{}", result);
+        let parsed = repl::read_command();
+        println!("Parse tree: {:?}", parsed);
+        let prog = ast::ast_from_parse_tree(parsed);
+        println!("Abstract syntax tree: {:?}", prog);
+        let result = eval::evaluate_program(prog);
+        println!("Result: {}", result);
     }
 }

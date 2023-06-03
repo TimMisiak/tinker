@@ -1,15 +1,17 @@
-use crate::grammar::ast::{EvalExpr, ProgramExpr};
+use crate::ast::*;
 
-// TODO: Expression evaluation needs an evaluation context. Possibly including memory read, register read, and symbol names
-pub fn evaluate_expression(expr: EvalExpr) -> u64 {
+pub fn evaluate_expression(expr: Expression) -> u64 {
     match expr {
-        EvalExpr::Number(x) => x,
-        EvalExpr::Add(x, _, y) => evaluate_expression(*x) + evaluate_expression(*y),
+        Expression::Number(x) => x,
+        Expression::Add(x, y) => evaluate_expression(*x) + evaluate_expression(*y),
+        Expression::Subtract(x, y) => evaluate_expression(*x) - evaluate_expression(*y),
+        Expression::Multiply(x, y) => evaluate_expression(*x) * evaluate_expression(*y),
+        Expression::Divide(x, y) => evaluate_expression(*x) / evaluate_expression(*y),
     }
 }
 
-pub fn evaluate_program(expr: ProgramExpr) -> u64 {
+pub fn evaluate_program(expr: Program) -> u64 {
     match expr {
-        ProgramExpr::Expression(x) => evaluate_expression(*x)
+        Program::Exp(x) => evaluate_expression(*x)
     }
 }
