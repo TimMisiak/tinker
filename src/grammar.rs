@@ -1,6 +1,3 @@
-use codemap::CodeMap;
-use codemap_diagnostic::{ColorConfig, Diagnostic, Emitter, Level, SpanLabel, SpanStyle};
-use rust_sitter::errors::{ParseError, ParseErrorReason};
 
 #[rust_sitter::grammar("command")]
 pub mod ast {
